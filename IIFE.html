@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    function makeCounter() {
+        let i = 0
+        return function(){
+            alert(++i)
+        }
+    }
+    let counter = makeCounter();
+    (function (a) {console.log(a)} )('这是一条立即执行函数');
+    //关于自执行函数（匿名函数自调用）的作用：防止全局变量污染。eg jQuery被应用在成千上万的JavaScript程序中，
+    //必须确保jQuery创建的变量不能和导入他的程序所使用的变量发生冲突。
+    (function( window, undefined ) {
+        // 构造jQuery对象
+        var jQuery = function( selector, context ) {
+        return new jQuery.fn.init( selector, context, rootjQuery );
+        }
+        // 工具函数 Utilities
+        // 异步队列 Deferred
+        // 浏览器测试 Support
+        // 数据缓存 Data
+        // 队列 queue
+        // 属性操作 Attribute
+        // 事件处理 Event
+        // 选择器 Sizzle
+        // DOM遍历
+        // DOM操作
+        // CSS操作
+        // 异步请求 Ajax
+        // 动画 FX
+        // 坐标和大小
+        window.jQuery = window.$ = jQuery;
+    })(window);
+    // 通过传入window变量，使得window由全局变量变为局部变量，当在jQuery代码块中访问window时，不需要将作
+    //用域链回退到顶层作用域，这样可以更快的访问window；这还不是关键所在，更重要的是，将window作为参数传入
+    //，可以在压缩代码时进行优化，看看jquery-1.6.1.min.js： (function(a,b){})(window); // window 被优化为 a
+    //因为有一条规范指的是括号内不能函数声明所以当且遇到function 关键字的时候解释器自动认为它是函数表达式
+    //至于函数声明和函数表达式就是 function sum(){} 和let sum = function(){}的区别
+    //这里顺便会议一下es6里面的函数表达式语法： let sum  = ()=>{} 这种情况不能用于构造函数。
+    (function(){/* code */}());//Crockford recommends this one，括号内的表达式代表函数立即调用表达式
+    (function(){/* code */})();//But this one works just as well，括号内的表达式代表函数表达式
+    let a = 1,b = 2,c = 3
+    let d = (function (i,j,k){return i+j+k})(a,b,c)
+    //变量可以储存函数的结果在不需要重复使用函数的情况下可以直接赋值给变量，增强可读性。
+    //接下来有一个特性就是可以保存闭包状态
+    function text1(){
+        let item = document.getElementsByTagName('a')
+        for(var i = 0;i<item.length;i++){
+            // const a = i
+            item[i].addEventListener('click',function(e){
+                e.preventDefault();
+                alert(`i am link # ${a}`)
+            },false)
+        }
+    }
+
+    function text2(){
+        let item = document.getElementsByTagName('a')
+        for(let i = 0;i<item.length;i++){
+            (function(lockIndex){item[lockIndex-1].addEventListener('click',function(e){
+                e.preventDefault();
+                alert(`i am link # ${lockIndex}`)
+            },false)})(i+1)
+        }
+    }
+    // 这个addEventListener()是一个DOM方法，作用向指定的元素添加事件
+    // 过程是这样的浏览器将HTML解析成DOM节点，DOM节点可以理解为每个DOM对象,
+    // 而这个对象有一个自定义添加事件的方法，比如 节点.addEventListener()
+    // 这个方法需要三个参数，第一个是DOM事件的名字这个文档有定义
+    // 第二个，参数是方法，也就是这个添加的事件指定的一个方法，比如这里的点击事件，通过
+    // e这个参数，传给了函数，需要自定义的话，首先第一步去除这个时间本来默认的一些方法，具体默认
+    // 默认方法文档有解释，然后就是添加自定义方法
+    // 然后回归到这里的IIFE，首先我用朴素的方法，使用for循环对每个DOM节点用addEventListener()
+    // 这里有个问题就是，i用var定义的也就是i在代码块中的作用，eg
+    var e = 9
+    for(let i = 0;i<1;i++){
+        var e = 10
+    }
+    console.log(e)//e
+    // 也就是
+    window.onload = function(){
+        text1()
+    }
+</script>
+<body>
+    <button type="button" onclick="counter()">点击</button>
+    <a>1</a>
+    <a>2</a>
+    <a>3</a>
+    <a>4</a>
+</body>
+</html>

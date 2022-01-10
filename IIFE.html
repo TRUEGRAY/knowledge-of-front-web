@@ -7,6 +7,7 @@
     <title>Document</title>
 </head>
 <script>
+    //闭包的定义函数以及声明的函数的词法环境。
     function makeCounter() {
         let i = 0
         return function(){
@@ -83,8 +84,15 @@
     for(let i = 0;i<1;i++){
         var e = 10
     }
-    console.log(e)//e
-    // 也就是
+    //console.log(e)//e = 10
+    // 上面的text1中给addListenerEvent中的时间给变参数其实是一个函数和函数词法环境组成的闭包，他们共享着词法环境中的变量，
+    //也就是它只会在for循环之后才执行。
+    // 由于var有着变量提升，for循环的的迭代变量i一直是最初执行for循环时的这个值，所以当for循环运行后，我们设置的点击事件的函数，
+    //执行alert('i am #link ${i}')然后这时候才会在text2环境中找到i然后拼接字符串。而这时的i已经是item.length了
+    //而对于使用let声明变量的时候，js引擎在后台会为每个迭代循环声明一个新的迭代变量，当循环结束时语句找的i相当于前面创建的不同变量的一个实例。
+    
+
+
     window.onload = function(){
         text1()
     }

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        //什么是new操作符，javascript是一个面向对象的语言（准确说是class类出现之后，
+        //它仿照了其他C++\java的语法也就是new操作符实现构造函数的实例化
+        //就是将创建的对象有构造函数的类型。至于面向对象的继承问题这里使用了原型链。
+        //这里举例new的一些功能
+        // function People (name,age){
+        //     this.name = name
+        //     this.age = age
+        // }
+        // People.prototype.sayHello =function(){
+        //     console.log(`hi, I am ${this.name}`)
+        // }
+        // const bobal = new People('bobal',22)
+        // console.log(bobal.name)
+        // console.log(bobal.age)
+        // console.log( bobal.sayHello() )
+        //从例子中可以看出，实例bobal可以访问到构造函数的普通属性，也可以访问到构造函数的prototype
+        //由于new是操作符属于关键字不能，这里用一个函数来模拟
+
+        //由于new出来的结果是新对象，所以这里也要创建一个新对象，并且有构造函数的一些属性这里可以用apply实现。
+        //实例的__proto__指向构造函数的prototype
+        // function newSimulation(){
+        //     const obj = new Object()
+        //     Constructor = [].shift.call(arguments)
+        //     obj.__proto__ = Constructor.prototype
+        //     Constructor.apply(obj,arguments)
+        //     return obj
+        // }
+        // //调用函数首先会创建一个对象，最后将对象返回给实例
+        // //其次将第一个参数（传入的构造函数）给Constructor
+        // //修改实例obj的__proto__给prototype
+        // //然后利用applay将Constructor的this指向obj
+        // //下面进行测试
+        // function People (name,age){
+        //     this.name = name
+        //     this.age = age
+        // }
+        // People.prototype.sayHello = function(){
+        //     console.log('hi,I am '+this.name)
+        // }
+        // const bobal = newSimulation(People,'bobal',22)
+        // console.log(bobal.name)//bobal
+        // console.log(bobal.age)//22
+        // console.log(bobal.sayHello())//hi, I am bobal
+        
+        //关于new的一个特性，假如构造函数有返回值，这里的实例对象只能访问返回对象的属性和方法
+        function People(name,age){
+            this.name = name
+            this.age = age
+            return{
+                strength:60,
+                sayHello:function(){
+                    console.log('hi , I am' + this.name)
+                }
+            }
+        }
+        People.prototype.a = 'a'
+        const bobal = new People('bobal',22)
+        console.log(bobal.name)//undifined
+        console.log(bobal.age)//undifined
+        console.log(bobal.strength)//60
+        console.log(bobal.sayHello())//hi I am undifined
+        console.log(bobal.a)//undiined
+        //这个例子仅仅是构造函数返回对象的时候才出现的
+        //这里做一下改进
+        function newSimulation(){
+            const obj = new Object()
+            Constructor = [].shift.call(arguments)
+            obj.__proto__ = Constructor.prototype
+            const res = Constructor.apply(obj,arguments)//构造函数本身返回
+            return typeof res === 'object'?res:obj
+        }
+
+        
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

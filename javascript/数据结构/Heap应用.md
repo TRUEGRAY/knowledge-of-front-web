@@ -15,7 +15,9 @@ n个数取第k个小的数
 
 ------
 
-##### (桶排序)  $O(nlogn)$
+##### (桶排序)
+时间复杂度O(nlogn)
+空间复杂度O(n)
 
 ```javascript
 const readline = require('readline')
